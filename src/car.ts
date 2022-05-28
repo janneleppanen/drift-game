@@ -1,37 +1,48 @@
 import Controls from "./controls";
 
 class Car {
-  public x: number = 0;
-  public y: number = 0;
   public controls: Controls = new Controls();
+  public x: number = window.innerWidth / 2;
+  public y: number = window.innerHeight / 2;
 
-  constructor(private size: number = 4) {}
+  public steering: number = 0.04;
+  public angle: number = 0;
+  public speed: number = 0;
+  public acceleration: number = 0.2;
+  public friction: number = 0.99;
+
+  constructor() {}
 
   update() {
     if (this.controls.isPressing("ArrowUp")) {
-      this.y -= 10;
+      this.speed += this.acceleration;
     }
     if (this.controls.isPressing("ArrowDown")) {
-      this.y += 10;
+      this.speed -= this.acceleration;
     }
     if (this.controls.isPressing("ArrowLeft")) {
-      this.x -= 10;
+      this.angle -= Math.min(this.steering, this.speed / 40);
     }
     if (this.controls.isPressing("ArrowRight")) {
-      this.x += 10;
+      this.angle += Math.min(this.steering, this.speed / 40);
     }
+
+    this.speed *= this.friction;
+    this.y -= Math.cos(this.angle) * this.speed;
+    this.x += Math.sin(this.angle) * this.speed;
   }
 
   draw(ctx: CanvasRenderingContext2D) {
     ctx.fillStyle = "tomato ";
     ctx.save();
     ctx.translate(this.x, this.y);
+    ctx.rotate(this.angle);
 
-    ctx.moveTo(0, 0);
-    ctx.lineTo(0, 100);
-    ctx.lineTo(100, 100);
-    ctx.lineTo(100, 0);
-    ctx.lineTo(0, 0);
+    ctx.moveTo(-10, -20);
+    ctx.lineTo(-10, 20);
+    ctx.lineTo(10, 20);
+    ctx.lineTo(10, -20);
+    ctx.lineTo(-10, -20);
     ctx.fill();
 
     ctx.restore();
