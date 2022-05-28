@@ -14,13 +14,14 @@ const road = new Road();
 function animate(time = 0) {
   canvas.height = window.innerHeight;
   canvas.width = window.innerWidth;
-  ctx.save();
 
   car.update();
 
+  ctx.save();
+  ctx.translate(-car.x + canvas.width / 2, -car.y + canvas.height / 2);
+  ctx.scale(1 - car.speed * 0.01, 1 - car.speed * 0.01);
   road.draw(ctx);
   car.draw(ctx);
-
   ctx.restore();
   requestAnimationFrame(animate);
 }
