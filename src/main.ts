@@ -1,4 +1,5 @@
 import Car from "./car";
+import Controls from "./controls";
 import "./style.css";
 
 const canvas = document.querySelector<HTMLCanvasElement>("#canvas")!;
