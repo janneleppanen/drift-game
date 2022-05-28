@@ -10,10 +10,27 @@ class Car {
   public speed: number = 0;
   public acceleration: number = 0.2;
   public friction: number = 0.99;
+  public maxSpeed: number = 6;
+
+  public deltaX: number = 0;
+  public deltaY: number = 0;
+
+  public drifting: number = 0;
 
   constructor() {}
 
   update() {
+    this.calculateSpeed();
+    this.calculateDrifting();
+
+    this.deltaX = Math.sin(this.angle + this.drifting) * this.speed;
+    this.deltaY = Math.cos(this.angle + this.drifting) * this.speed;
+
+    this.x += this.deltaX;
+    this.y -= this.deltaY;
+  }
+
+  calculateSpeed() {
     if (this.controls.isPressing("ArrowUp")) {
       this.speed += this.acceleration;
     }
@@ -28,8 +45,28 @@ class Car {
     }
 
     this.speed *= this.friction;
-    this.y -= Math.cos(this.angle) * this.speed;
-    this.x += Math.sin(this.angle) * this.speed;
+    this.speed = Math.min(this.speed, this.maxSpeed);
+    this.speed = Math.max(this.speed, -this.maxSpeed / 2);
+  }
+
+  calculateDrifting() {
+    if (
+      this.controls.isPressing("ArrowUp") &&
+      this.controls.isPressing("ArrowLeft") &&
+      this.speed > 0
+    ) {
+      this.drifting += 0.02;
+    } else if (
+      this.controls.isPressing("ArrowUp") &&
+      this.controls.isPressing("ArrowRight") &&
+      this.speed > 0
+    ) {
+      this.drifting -= 0.02;
+    } else {
+      this.drifting *= this.friction * this.friction;
+    }
+
+    this.drifting *= this.friction;
   }
 
   draw(ctx: CanvasRenderingContext2D) {
@@ -43,8 +80,23 @@ class Car {
     ctx.lineTo(10, 20);
     ctx.lineTo(10, -20);
     ctx.lineTo(-10, -20);
-    ctx.fill();
 
+    ctx.fill();
+    ctx.restore();
+
+    this.drawForces(ctx);
+  }
+
+  drawForces(ctx: CanvasRenderingContext2D) {
+    ctx.save();
+    ctx.translate(this.x, this.y);
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = "black";
+
+    ctx.moveTo(0, 0);
+    ctx.lineTo(this.deltaX * 10, -this.deltaY * 10);
+
+    ctx.stroke();
     ctx.restore();
   }
 }
