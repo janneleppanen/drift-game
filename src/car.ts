@@ -70,18 +70,23 @@ class Car {
   }
 
   draw(ctx: CanvasRenderingContext2D) {
-    ctx.fillStyle = "tomato ";
+    ctx.setLineDash([]);
     ctx.save();
     ctx.translate(this.x, this.y);
     ctx.rotate(this.angle);
+    ctx.strokeStyle = "#333";
+    ctx.lineWidth = 1;
+    ctx.fillStyle = "tomato";
 
+    ctx.beginPath();
     ctx.moveTo(-10, -20);
     ctx.lineTo(-10, 20);
     ctx.lineTo(10, 20);
     ctx.lineTo(10, -20);
     ctx.lineTo(-10, -20);
-
     ctx.fill();
+    ctx.stroke();
+
     ctx.restore();
 
     this.drawForces(ctx);

@@ -1,5 +1,6 @@
 import Car from "./car";
 import Controls from "./controls";
+import Road from "./road";
 import "./style.css";
 
 const canvas = document.querySelector<HTMLCanvasElement>("#canvas")!;
@@ -8,6 +9,7 @@ canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
 const car = new Car();
+const road = new Road();
 
 function animate(time = 0) {
   canvas.height = window.innerHeight;
@@ -15,6 +17,8 @@ function animate(time = 0) {
   ctx.save();
 
   car.update();
+
+  road.draw(ctx);
   car.draw(ctx);
 
   ctx.restore();
