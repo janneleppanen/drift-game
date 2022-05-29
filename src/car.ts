@@ -47,6 +47,8 @@ class Car {
     this.odometer += this.speed;
 
     this.checkCrash();
+    this.sensor.update();
+
   }
 
   calculateSpeed() {

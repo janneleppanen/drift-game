@@ -4,11 +4,9 @@ export const lerp = (A: number, B: number, t: number) => {
   return A + (B - A) * t;
 };
 
-export type Intersection = {
-  x: number;
-  y: number;
+export interface Intersection extends Vec2 {
   offset: number;
-};
+}
 
 export function getIntersection(
   A: Vec2,
@@ -36,7 +34,7 @@ export function getIntersection(
   return null;
 }
 
-export function polysIntersect(poly1: Vec2[], poly2: Vex2[]) {
+export function polysIntersect(poly1: Vec2[], poly2: Vec2[]) {
   return poly1.find((_, index1) => {
     return !!poly2.find((_, index2) => {
       return getIntersection(
