@@ -45,7 +45,7 @@ class Car {
     this.y += this.deltaY;
 
     this.odometer += this.speed;
-    console.log(this.odometer);
+
     this.checkCrash();
   }
 
@@ -98,15 +98,17 @@ class Car {
   }
 
   draw(ctx: CanvasRenderingContext2D) {
+    ctx.beginPath();
     ctx.setLineDash([]);
     ctx.save();
     ctx.fillStyle = this.broken ? "gray" : "tomato";
+    ctx.strokeStyle = "black";
 
-    ctx.beginPath();
     ctx.moveTo(this.polygon[0].x, this.polygon[0].y);
     for (let i = 1; i < this.polygon.length; i++) {
       ctx.lineTo(this.polygon[i].x, this.polygon[i].y);
     }
+    ctx.lineTo(this.polygon[0].x, this.polygon[0].y);
     ctx.stroke();
     ctx.fill();
     ctx.restore();
@@ -116,10 +118,11 @@ class Car {
   }
 
   drawForces(ctx: CanvasRenderingContext2D) {
+    ctx.beginPath();
     ctx.save();
     ctx.translate(this.x, this.y);
     ctx.lineWidth = 1;
-    ctx.strokeStyle = "black";
+    ctx.strokeStyle = "green";
 
     ctx.moveTo(0, 0);
     ctx.lineTo(this.deltaX * 10, this.deltaY * 10);
