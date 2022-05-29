@@ -31,10 +31,6 @@ class Road {
         normal1.y + normal2.y
       );
 
-      if (index === 2) {
-        console.log("ok");
-      }
-
       this.innerPoints.push(
         new Vec2(
           point.x + normal3.x * this.width,
