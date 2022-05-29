@@ -10,6 +10,8 @@ canvas.height = window.innerHeight;
 
 const road = new Road();
 const car = new Car(road);
+car.x = 0;
+car.angle = Math.PI;
 
 function animate(time = 0) {
   canvas.height = window.innerHeight;

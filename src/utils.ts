@@ -35,3 +35,16 @@ export function getIntersection(
 
   return null;
 }
+
+export function polysIntersect(poly1: Vec2[], poly2: Vex2[]) {
+  return poly1.find((_, index1) => {
+    return !!poly2.find((_, index2) => {
+      return getIntersection(
+        poly1[index1],
+        poly1[(index1 + 1) % poly1.length],
+        poly2[index2],
+        poly2[(index2 + 1) % poly2.length]
+      );
+    });
+  });
+}

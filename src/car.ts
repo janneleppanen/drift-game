@@ -1,6 +1,7 @@
 import CarSensor from "./carSensor";
 import Controls from "./controls";
 import Road from "./road";
+import { polysIntersect } from "./utils";
 import Vec2 from "./vec2";
 
 class Car {
@@ -23,12 +24,15 @@ class Car {
   public drifting: number = 0;
   public polygon: Vec2[] = [];
   public sensor: CarSensor;
+  public broken = false;
 
-  constructor(road: Road) {
+  constructor(public road: Road) {
     this.sensor = new CarSensor(this, [road.innerPoints, road.outerPoints]);
   }
 
   update() {
+    if (this.broken) return;
+
     this.calculateSpeed();
     this.calculateDrifting();
     this.polygon = this.createPolygon();
@@ -38,6 +42,8 @@ class Car {
 
     this.x += this.deltaX;
     this.y += this.deltaY;
+
+    this.checkCrash();
   }
 
   calculateSpeed() {
@@ -79,10 +85,19 @@ class Car {
     this.drifting *= this.friction;
   }
 
+  checkCrash() {
+    [this.road.innerPoints, this.road.outerPoints].forEach((obstacle) => {
+      const i = polysIntersect(obstacle, this.polygon);
+      if (i) {
+        this.broken = true;
+      }
+    });
+  }
+
   draw(ctx: CanvasRenderingContext2D) {
     ctx.setLineDash([]);
     ctx.save();
-    ctx.fillStyle = "tomato";
+    ctx.fillStyle = this.broken ? "gray" : "tomato";
 
     ctx.beginPath();
     ctx.moveTo(this.polygon[0].x, this.polygon[0].y);
