@@ -1,3 +1,4 @@
+import CarSensor from "./carSensor";
 import Controls from "./controls";
 import Vec2 from "./vec2";
 
@@ -20,8 +21,11 @@ class Car {
 
   public drifting: number = 0;
   public polygon: Vec2[] = [];
+  public sensor: CarSensor;
 
-  constructor() {}
+  constructor() {
+    this.sensor = new CarSensor(this);
+  }
 
   update() {
     this.calculateSpeed();
@@ -88,7 +92,8 @@ class Car {
     ctx.fill();
     ctx.restore();
 
-    this.drawForces(ctx);
+    // this.drawForces(ctx);
+    this.sensor.draw(ctx);
   }
 
   drawForces(ctx: CanvasRenderingContext2D) {
