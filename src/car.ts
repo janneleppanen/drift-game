@@ -25,6 +25,7 @@ class Car {
   public polygon: Vec2[] = [];
   public sensor: CarSensor;
   public broken = false;
+  public odometer = 0;
 
   constructor(public road: Road) {
     this.sensor = new CarSensor(this, [road.innerPoints, road.outerPoints]);
@@ -43,6 +44,8 @@ class Car {
     this.x += this.deltaX;
     this.y += this.deltaY;
 
+    this.odometer += this.speed;
+    console.log(this.odometer);
     this.checkCrash();
   }
 

@@ -4,6 +4,7 @@ import Road from "./road";
 import "./style.css";
 
 const canvas = document.querySelector<HTMLCanvasElement>("#canvas")!;
+const score = document.querySelector<HTMLSpanElement>(".score")!;
 const ctx = canvas.getContext("2d")!;
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
@@ -24,6 +25,9 @@ function animate(time = 0) {
   road.draw(ctx);
   car.draw(ctx);
   ctx.restore();
+
+  score.innerHTML = car.odometer.toFixed().toString();
+
   requestAnimationFrame(animate);
 }
 

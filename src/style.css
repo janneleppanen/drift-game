@@ -4,3 +4,17 @@ body {
   padding: 0;
   overflow: hidden;
 }
+
+.score-container {
+  background: white;
+  border: 1px solid #ddd;
+  position: absolute;
+  top: 1em;
+  left: 1em;
+  padding: 0.5em;
+  min-width: 120px;
+}
+
+.score {
+  font-weight: bold;
+}
