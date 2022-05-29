@@ -123,7 +123,7 @@ class Car {
     });
   }
 
-  draw(ctx: CanvasRenderingContext2D) {
+  draw(ctx: CanvasRenderingContext2D, drawSensor = false) {
     ctx.beginPath();
     ctx.setLineDash([]);
     ctx.save();
@@ -140,7 +140,9 @@ class Car {
     ctx.restore();
 
     // this.drawForces(ctx);
-    this.sensor.draw(ctx);
+    if (drawSensor) {
+      this.sensor.draw(ctx);
+    }
   }
 
   drawForces(ctx: CanvasRenderingContext2D) {
