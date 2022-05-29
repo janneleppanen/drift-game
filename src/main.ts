@@ -8,8 +8,8 @@ const ctx = canvas.getContext("2d")!;
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-const car = new Car();
 const road = new Road();
+const car = new Car(road);
 
 function animate(time = 0) {
   canvas.height = window.innerHeight;

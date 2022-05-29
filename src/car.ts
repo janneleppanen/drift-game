@@ -1,5 +1,6 @@
 import CarSensor from "./carSensor";
 import Controls from "./controls";
+import Road from "./road";
 import Vec2 from "./vec2";
 
 class Car {
@@ -23,8 +24,8 @@ class Car {
   public polygon: Vec2[] = [];
   public sensor: CarSensor;
 
-  constructor() {
-    this.sensor = new CarSensor(this);
+  constructor(road: Road) {
+    this.sensor = new CarSensor(this, [road.innerPoints, road.outerPoints]);
   }
 
   update() {
