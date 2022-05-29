@@ -1,5 +1,6 @@
 import CarSensor from "./carSensor";
 import Controls from "./controls";
+import { NeuralNetwork } from "./network";
 import Road from "./road";
 import { polysIntersect } from "./utils";
 import Vec2 from "./vec2";
@@ -26,9 +27,12 @@ class Car {
   public sensor: CarSensor;
   public broken = false;
   public odometer = 0;
+  public brain: NeuralNetwork;
 
   constructor(public road: Road) {
     this.sensor = new CarSensor(this, [road.innerPoints, road.outerPoints]);
+
+    this.brain = new NeuralNetwork([this.sensor.rayCount + 1, 6, 4]);
   }
 
   update() {
@@ -49,6 +53,26 @@ class Car {
     this.checkCrash();
     this.sensor.update();
 
+    if (this.sensor && this.brain) {
+      const offsets = this.sensor.readings.map((s) =>
+        s === undefined ? 0 : 1 - s.offset
+      );
+      const outputs = NeuralNetwork.feedForward(offsets, this.brain);
+      this.controls.keysDown = [];
+
+      if (!!outputs[0]) {
+        this.controls.keysDown.push("ArrowUp");
+      }
+      if (!!outputs[1]) {
+        this.controls.keysDown.push("ArrowDown");
+      }
+      if (!!outputs[2]) {
+        this.controls.keysDown.push("ArrowLeft");
+      }
+      if (!!outputs[3]) {
+        this.controls.keysDown.push("ArrowRight");
+      }
+    }
   }
 
   calculateSpeed() {
