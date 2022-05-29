@@ -3,11 +3,15 @@ import Vec2 from "./vec2";
 class Road {
   public width = 100;
   public points: Vec2[] = [
-    new Vec2(150, 150),
-    new Vec2(1000, 100),
-    new Vec2(1200, 300),
-    new Vec2(1000, 500),
-    new Vec2(200, 500),
+    new Vec2(0, 100),
+    new Vec2(100, 0),
+    new Vec2(400, -100),
+    new Vec2(800, 0),
+    new Vec2(900, 100),
+    new Vec2(900, 900),
+    new Vec2(800, 1000),
+    new Vec2(100, 1000),
+    new Vec2(0, 900),
   ];
   public innerPoints: Vec2[] = [];
   public outerPoints: Vec2[] = [];
@@ -23,9 +27,13 @@ class Road {
       );
       const normal2 = Vec2.normalize(next.x - point.x, next.y - point.y);
       const normal3 = Vec2.normalize(
-        normal2.x - normal1.x * -1,
-        normal2.y - normal1.y * -1
+        normal1.x + normal2.x,
+        normal1.y + normal2.y
       );
+
+      if (index === 2) {
+        console.log("ok");
+      }
 
       this.innerPoints.push(
         new Vec2(
@@ -70,7 +78,7 @@ class Road {
     // middle
     ctx.beginPath();
     ctx.setLineDash([5, 15]);
-    ctx.strokeStyle = "white";
+    ctx.strokeStyle = "#fff";
     ctx.lineWidth = 3;
     ctx.moveTo(this.points[0].x, this.points[0].y);
     this.points.forEach((_, index) => {

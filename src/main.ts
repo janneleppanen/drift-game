@@ -19,7 +19,6 @@ function animate(time = 0) {
 
   ctx.save();
   ctx.translate(-car.x + canvas.width / 2, -car.y + canvas.height / 2);
-  ctx.scale(1 - car.speed * 0.01, 1 - car.speed * 0.01);
   road.draw(ctx);
   car.draw(ctx);
   ctx.restore();
