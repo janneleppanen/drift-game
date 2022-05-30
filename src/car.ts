@@ -38,26 +38,21 @@ class Car {
   update() {
     if (this.broken) return;
 
-    this.calculateSpeed();
-    this.calculateDrifting();
-    this.polygon = this.createPolygon();
-
-    this.deltaX = Math.sin(this.angle + this.drifting) * this.speed;
-    this.deltaY = Math.cos(this.angle + this.drifting) * this.speed;
-
-    this.x += this.deltaX;
-    this.y += this.deltaY;
-
-    this.odometer += this.speed;
-
-    this.checkCrash();
     this.sensor.update();
 
     if (this.sensor && this.brain) {
       const offsets = this.sensor.readings.map((s) =>
         s === undefined ? 0 : 1 - s.offset
       );
-      const outputs = NeuralNetwork.feedForward(offsets, this.brain);
+
+      const speed = Math.max(this.speed, 0) / this.maxSpeed;
+      const outputs = NeuralNetwork.feedForward(
+        [...offsets, speed],
+        this.brain
+      );
+
+      console.log(offsets, outputs);
+
       this.controls.keysDown = [];
 
       if (!!outputs[0]) {
@@ -73,6 +68,20 @@ class Car {
         this.controls.keysDown.push("ArrowRight");
       }
     }
+
+    this.calculateSpeed();
+    this.calculateDrifting();
+    this.polygon = this.createPolygon();
+
+    this.deltaX = Math.sin(this.angle + this.drifting) * this.speed;
+    this.deltaY = Math.cos(this.angle + this.drifting) * this.speed;
+
+    this.x += this.deltaX;
+    this.y += this.deltaY;
+
+    this.odometer += this.speed;
+
+    this.checkCrash();
   }
 
   calculateSpeed() {
@@ -128,14 +137,12 @@ class Car {
     ctx.setLineDash([]);
     ctx.save();
     ctx.fillStyle = this.broken ? "gray" : "tomato";
-    ctx.strokeStyle = "black";
 
     ctx.moveTo(this.polygon[0].x, this.polygon[0].y);
     for (let i = 1; i < this.polygon.length; i++) {
       ctx.lineTo(this.polygon[i].x, this.polygon[i].y);
     }
     ctx.lineTo(this.polygon[0].x, this.polygon[0].y);
-    ctx.stroke();
     ctx.fill();
     ctx.restore();
 

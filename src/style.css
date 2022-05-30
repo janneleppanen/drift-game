@@ -5,7 +5,7 @@ body {
   overflow: hidden;
 }
 
-.score-container {
+.gui-container {
   background: white;
   border: 1px solid #ddd;
   position: absolute;
