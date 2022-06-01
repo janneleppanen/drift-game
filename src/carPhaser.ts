@@ -24,15 +24,10 @@ class Car {
 
   create() {
     // Graphics
-    const graphics = this.scene.add.graphics({ x: 100, y: 100 });
+    const graphics = this.scene.add.graphics({ x: 0, y: 0 });
     graphics.lineStyle(2, 0x00aa00);
-    graphics.beginPath();
-    graphics.moveTo(this.polygon.points[0].x, this.polygon.points[0].y);
-    this.polygon.points.forEach((point) => {
-      graphics.lineTo(point.x, point.y);
-    });
-    graphics.closePath();
-    graphics.strokePath();
+    // graphics.strokePoints(this.polygon.points, true);
+    graphics.strokeRect(-10, -20, 20, 40);
 
     this.object = graphics;
 

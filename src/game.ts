@@ -1,6 +1,6 @@
 import "phaser";
 
-import RoadScene from "./scenes/road";
+import RaceScene from "./scenes/race";
 
 const config = {
   type: Phaser.AUTO,
@@ -13,7 +13,7 @@ const config = {
     },
   },
   backgroundColor: "#444",
-  scene: [RoadScene],
+  scene: [RaceScene],
 };
 
 new Phaser.Game(config);
