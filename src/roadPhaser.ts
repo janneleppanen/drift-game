@@ -1,20 +1,21 @@
-class Road {
-  public polygon = new Phaser.Geom.Polygon([
-    0, 100, 100, 0, 400, 200, 800, 0, 900, 100, 900, 900, 800, 1000, 100, 1000,
-    0, 900,
-  ]);
-  public object?: Phaser.GameObjects.Graphics;
+class Road extends Phaser.Geom.Polygon {
+  public graphics?: Phaser.GameObjects.Graphics;
 
-  constructor(public scene: Phaser.Scene) {}
+  constructor(public scene: Phaser.Scene) {
+    super([
+      0, 100, 100, 0, 400, 200, 800, 0, 900, 100, 900, 900, 800, 1000, 100,
+      1000, 0, 900,
+    ]);
+  }
 
   create() {
     const graphics = this.scene.add.graphics({ x: 100, y: 100 });
     graphics.lineStyle(2, 0x00aa00);
-    graphics.strokePoints(this.polygon.points, true);
+    graphics.strokePoints(this.points, true);
     graphics.lineStyle(2, 0xaa0000);
-    graphics.strokePoints(setPolygonOffet(this.polygon, 100, 1).points, true);
+    graphics.strokePoints(setPolygonOffet(this, 100, 1).points, true);
     graphics.lineStyle(2, 0xaa0000);
-    graphics.strokePoints(setPolygonOffet(this.polygon, 100, -1).points, true);
+    graphics.strokePoints(setPolygonOffet(this, 100, -1).points, true);
 
     this.object = graphics;
   }

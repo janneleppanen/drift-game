@@ -6,36 +6,35 @@ type KeyMap = {
   [key: string]: Phaser.Input.Keyboard.Key;
 };
 
-class Car {
+class Car extends Phaser.Geom.Polygon {
   public speed = 0;
   public acceleration = 0.2;
   public friction = 0.99;
-  public steering = 0.02;
+  public steering = 0.04;
   public drifting = 0;
-  public maxSpeed = 5;
+  public maxSpeed = 6;
 
-  public polygon = new Phaser.Geom.Polygon([
-    -10, -20, -10, 20, 10, 20, 10, -20,
-  ]);
   public keys?: KeyMap;
   public object?: Phaser.GameObjects.Graphics;
 
-  constructor(public scene: Phaser.Scene) {}
+  constructor(public scene: Phaser.Scene) {
+    super([-10, -20, -10, 20, 10, 20, 10, -20]);
+  }
 
   create() {
     // Graphics
     const graphics = this.scene.add.graphics({ x: 0, y: 0 });
     graphics.lineStyle(2, 0x00aa00);
-    // graphics.strokePoints(this.polygon.points, true);
-    graphics.strokeRect(-10, -20, 20, 40);
+    graphics.strokePoints(this.points, true);
 
+    console.log(graphics);
     this.object = graphics;
 
     this.keys = {
       UP: this.scene.input.keyboard.addKey(keyCodes.UP),
       LEFT: this.scene.input.keyboard.addKey(keyCodes.LEFT),
       RIGHT: this.scene.input.keyboard.addKey(keyCodes.RIGHT),
-      DOWN: this.scene.input.keyboard.addKey(keyCodes.DOWN),
+      DOWN: this.scene.input.keyboard.addKey(keyCodes.SPACE),
     };
   }
 
@@ -49,6 +48,17 @@ class Car {
       Math.sin(this.object.rotation - this.drifting) * this.speed;
     this.object.y -=
       Math.cos(this.object.rotation - this.drifting) * this.speed;
+
+    this.setTo([
+      -10 + this.object.x,
+      -20 + this.object.y,
+      -10 + this.object.x,
+      20 + this.object.y,
+      10 + this.object.x,
+      20 + this.object.y,
+      10 + this.object.x,
+      -20 + this.object.y,
+    ]);
   }
 
   calculateSpeed() {
