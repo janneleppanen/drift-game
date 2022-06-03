@@ -1,6 +1,6 @@
 import "phaser";
-import Car from "../carPhaser";
-import Road from "../roadPhaser";
+import Car from "../car";
+import Road from "../road";
 
 let frame = 0;
 class RoadScene extends Phaser.Scene {
