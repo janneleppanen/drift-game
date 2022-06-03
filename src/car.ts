@@ -1,4 +1,5 @@
 import "phaser";
+import Sensors from "./sensor";
 
 const keyCodes = Phaser.Input.Keyboard.KeyCodes;
 
@@ -16,18 +17,21 @@ class Car extends Phaser.Geom.Polygon {
 
   public keys?: KeyMap;
   public object?: Phaser.GameObjects.Graphics;
+  public sensors;
 
   constructor(public scene: Phaser.Scene) {
     super([-10, -20, -10, 20, 10, 20, 10, -20]);
+    this.sensors = new Sensors(scene);
   }
 
   create() {
+    this.sensors.create();
+
     // Graphics
     const graphics = this.scene.add.graphics({ x: 0, y: 0 });
     graphics.lineStyle(2, 0x00aa00);
     graphics.strokePoints(this.points, true);
 
-    console.log(graphics);
     this.object = graphics;
 
     this.keys = {
@@ -45,9 +49,9 @@ class Car extends Phaser.Geom.Polygon {
     this.calculateDrifting();
 
     this.object.x +=
-      Math.sin(this.object.rotation - this.drifting) * this.speed;
-    this.object.y -=
-      Math.cos(this.object.rotation - this.drifting) * this.speed;
+      Math.sin(-this.object.rotation - this.drifting) * this.speed;
+    this.object.y +=
+      Math.cos(-this.object.rotation - this.drifting) * this.speed;
 
     this.setTo([
       -10 + this.object.x,
@@ -59,6 +63,8 @@ class Car extends Phaser.Geom.Polygon {
       10 + this.object.x,
       -20 + this.object.y,
     ]);
+
+    this.sensors.moveTo(this.object.x, this.object.y, this.object.angle);
   }
 
   calculateSpeed() {
@@ -84,13 +90,13 @@ class Car extends Phaser.Geom.Polygon {
 
   calculateDrifting() {
     if (this.keys?.UP.isDown && this.keys?.LEFT.isDown && this.speed > 0) {
-      this.drifting -= 0.02;
+      this.drifting += 0.02;
     } else if (
       this.keys?.UP.isDown &&
       this.keys?.RIGHT.isDown &&
       this.speed > 0
     ) {
-      this.drifting += 0.02;
+      this.drifting -= 0.02;
     } else {
       this.drifting *= this.friction * this.friction;
     }
