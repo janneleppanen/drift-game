@@ -1,9 +1,9 @@
 class Sensors {
   public rayCount = 5;
-  public rayLength = 200;
+  public rayLength = 400;
   public raySpread = Math.PI / 2;
 
-  public graphics?: Phaser.GameObjects.Graphics;
+  public graphics!: Phaser.GameObjects.Graphics;
 
   constructor(public scene: Phaser.Scene) {}
 
@@ -25,7 +25,7 @@ class Sensors {
         t
       );
       graphics.moveTo(0, 0);
-      graphics.lineTo(vec.x, vec.y);
+      graphics.lineTo(vec.x, -vec.y);
     }
     graphics.stroke();
     this.graphics = graphics;

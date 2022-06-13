@@ -1,77 +1,35 @@
-import "phaser";
-import Car from "../car";
-import Road from "../road";
+import Phaser from "phaser";
+import Car from "../objects/car";
+import Road from "../objects/road";
 
-let frame = 0;
-class RoadScene extends Phaser.Scene {
-  public car: Car;
-  public road: Road;
-  public hit?: Phaser.GameObjects.Graphics;
+class Race extends Phaser.Scene {
+  private car!: Phaser.Physics.Matter.Image;
+  private road!: Road;
+  private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
 
   constructor() {
-    super({ key: "RoadScene" });
-    this.car = new Car(this);
-    this.road = new Road(this);
+    super("race");
   }
 
-  create(): void {
-    this.car.create();
+  preload() {
+    this.load.image("car", "src/assets/car.png");
+  }
+
+  init() {
+    this.cursors = this.input.keyboard.createCursorKeys();
+  }
+
+  create() {
+    const { width, height } = this.scale;
+    this.car = new Car(this.matter.world, 0, 400, {});
+    this.road = new Road(this.matter.world);
     this.road.create();
-    this.cameras.main.zoom = 1;
-
-    this.g = this.add.graphics();
-    this.g.moveTo(-50, -50);
-    this.g.lineTo(50, 50);
-    this.g.moveTo(-50, 50);
-    this.g.lineTo(50, -50);
-    this.g.stroke();
-    // Phaser.Geom.GetRaysFromPointToPolygon
   }
 
-  update(time): void {
-    const carLine = new Phaser.Geom.Line(
-      this.car.points[0].x,
-      this.car.points[0].y,
-      this.car.points[1].x,
-      this.car.points[1].y
-    );
-    const roadLine = new Phaser.Geom.Line(
-      this.road.points[2].x,
-      this.road.points[2].y,
-      this.road.points[1].x,
-      this.road.points[1].y
-    );
-    // const i = Phaser.Geom.Intersects.GetLineToPolygon(carLine, this.road);
-    let i = new Phaser.Math.Vector3(0, 0, 10);
-    this.road.points.forEach((point, index) => {
-      const lastPoint = this.road.points[(index + 1) % this.road.points.length];
-      if (frame === 100) {
-        console.log({ point, lastPoint, carLine, i });
-      }
-      i = Phaser.Geom.Intersects.GetLineToLine(
-        carLine,
-        new Phaser.Geom.Line(lastPoint.x, lastPoint.y, point.x, point.y),
-        i
-      );
-    });
-
-    if (i && this.hit) {
-      console.log({
-        i,
-        carLine,
-        roadLine,
-      });
-      this.hit.x = i.x;
-      this.hit.y = i.y;
-    }
-
-    this.car.update();
-    if (this.car.object) {
-      this.cameras.main.pan(this.car.object.x, this.car.object.y, 1);
-    }
-
-    frame++;
+  update() {
+    this.car.update(this.cursors);
+    this.cameras.main.pan(this.car.x, this.car.y, 0);
   }
 }
 
-export default RoadScene;
+export default Race;
