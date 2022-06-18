@@ -4,3 +4,8 @@ body {
   padding: 0;
   overflow: hidden;
 }
+.rerun{
+  position: fixed;
+  top: 40px;
+  left: 10px;
+}

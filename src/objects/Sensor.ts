@@ -82,7 +82,7 @@ class Sensor {
           new Phaser.Math.Vector2(x, y)
         );
 
-        if (intersection) {
+        if (intersection && !this.readings[i]) {
           this.readings[i] = intersection;
         }
       });

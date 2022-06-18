@@ -1,3 +1,4 @@
+import { NeuralNetwork } from "../network";
 import Car from "../objects/Car";
 import Gui from "../objects/Gui";
 import Road from "../objects/Road";
@@ -21,6 +22,9 @@ class Race extends Phaser.Scene {
   private road!: Road;
   private gui!: Gui;
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
+  private bestCar!: Car;
+  private carCount = 2;
+  private bestScore = 0;
 
   constructor() {
     super("race");
@@ -30,44 +34,81 @@ class Race extends Phaser.Scene {
     this.road = new Road(this.matter.world, route);
     this.road.create();
 
-    this.cars.push(
-      new Car(
+    for (let i = 0; i < this.carCount; i++) {
+      const car = new Car(
         this.matter.world,
         -75,
         600,
         {},
-        "user",
+        "ai",
         new Sensor(this.matter.world, this.road.lines)
-      )
-    );
+      );
+      this.cars.push(car);
+    }
+
+    if (localStorage.getItem("bestAI")) {
+      for (let i = 0; i < this.cars.length; i++) {
+        const bestAI = JSON.parse(
+          localStorage.getItem("bestAI") || ""
+        ) as NeuralNetwork;
+        this.cars[i].brain = bestAI;
+
+        if (i != 0 && this.cars[i].brain) {
+          NeuralNetwork.mutate(this.cars[i].brain as NeuralNetwork, 0.2);
+        }
+      }
+    }
+
+    this.bestCar = this.cars[0];
     this.cursors = this.input.keyboard.createCursorKeys();
     this.gui = new Gui(this);
     this.gui.create();
 
     this.setupCheckpointCollision();
+
+    const button = document.querySelector(".rerun");
+
+    button?.addEventListener("click", () => {
+      localStorage.setItem("bestAI", JSON.stringify(this.bestCar?.brain));
+      window.location.reload();
+    });
   }
 
   update() {
     this.cars.forEach((car) => car.update(this.cursors));
-    this.cameras.main.pan(this.cars[0].x, this.cars[0].y, 10);
+    this.cameras.main.pan(this.bestCar.x, this.bestCar.y, 10);
 
-    this.gui.setTravelled(this.cars[0].odometer);
-    this.gui.setCheckpointCount(this.cars[0].checkpointCount);
+    this.getBestBrain();
+    this.gui.setScore(this.bestScore);
   }
 
   setupCheckpointCollision() {
     this.road.checkpoints.forEach((checkpoint) => {
-      const car = this.cars[0];
-      const carBody = this.cars[0].body as MatterJS.BodyType;
-      checkpoint.setOnCollideWith(
-        carBody,
-        (_: MatterJS.BodyType, collisionData: { id: string }) => {
-          if (car.lastCheckpoint !== collisionData.id) {
-            car.lastCheckpoint = collisionData.id;
-            car.checkpointCount++;
-          }
+      this.cars.forEach((car) => {
+        const carBody = car.body as MatterJS.BodyType;
+
+        if (carBody) {
+          checkpoint.setOnCollideWith(
+            carBody,
+            (_: MatterJS.BodyType, collisionData: { id: string }) => {
+              if (car.lastCheckpoint !== collisionData.id) {
+                car.lastCheckpoint = collisionData.id;
+                car.checkpointCount++;
+              }
+            }
+          );
         }
-      );
+      });
+    });
+  }
+
+  getBestBrain() {
+    this.cars.forEach((car) => {
+      const points = car.checkpointCount * 100 + car.odometer;
+      if (points > this.bestScore) {
+        this.bestScore = points;
+        this.bestCar = car;
+      }
     });
   }
 }
