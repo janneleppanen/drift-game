@@ -1,0 +1,22 @@
+import "./style.css";
+import Phaser from "phaser";
+import Race from "./scenes/Race";
+
+const config: Phaser.Types.Core.GameConfig = {
+  type: Phaser.AUTO,
+  width: window.innerWidth,
+  height: window.innerHeight,
+  physics: {
+    default: "matter",
+    matter: {
+      debug: {
+        showCollisions: true,
+      },
+      gravity: { y: 0 },
+    },
+  },
+  backgroundColor: "#444",
+  scene: [Race],
+};
+
+new Phaser.Game(config);
