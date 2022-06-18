@@ -1,4 +1,5 @@
 import Car from "../objects/Car";
+import Gui from "../objects/Gui";
 import Road from "../objects/Road";
 
 const route = [
@@ -17,6 +18,7 @@ const route = [
 class Race extends Phaser.Scene {
   private cars: Car[] = [];
   private road!: Road;
+  private gui!: Gui;
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
 
   constructor() {
@@ -28,11 +30,15 @@ class Race extends Phaser.Scene {
     this.cars.push(new Car(this.matter.world, 0, 600, {}));
     this.road.create();
     this.cursors = this.input.keyboard.createCursorKeys();
+    this.gui = new Gui(this);
+    this.gui.create();
   }
 
   update() {
     this.cars.forEach((car) => car.update(this.cursors));
     this.cameras.main.pan(this.cars[0].x, this.cars[0].y, 10);
+
+    this.gui.setTravelled(this.cars[0].odometer);
   }
 }
 

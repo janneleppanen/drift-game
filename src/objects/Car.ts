@@ -1,6 +1,8 @@
 class Car extends Phaser.Physics.Matter.Image {
-  private steering: number = 0.04;
-  private acceleration: number = 0.002;
+  public odometer = 0;
+
+  private steering = 0.04;
+  private acceleration = 0.002;
 
   constructor(
     world: Phaser.Physics.Matter.World,
@@ -25,6 +27,9 @@ class Car extends Phaser.Physics.Matter.Image {
     if (cursors) {
       this.move(cursors);
     }
+
+    const body = this.body as MatterJS.BodyType;
+    this.odometer += body.speed / 10;
   }
 
   private move(cursors: Phaser.Types.Input.Keyboard.CursorKeys) {
