@@ -4,6 +4,7 @@ class Road extends Phaser.Physics.Matter.Factory {
   public route: Phaser.Math.Vector2[] = [];
   public walls: Phaser.Physics.Matter.Sprite[] = [];
   public lines: Phaser.Math.Vector2[][] = [];
+  public checkpoints: MatterJS.BodyType[] = [];
 
   constructor(
     world: Phaser.Physics.Matter.World,
@@ -14,11 +15,12 @@ class Road extends Phaser.Physics.Matter.Factory {
   }
 
   create() {
-    this.walls.push(...this.drawWalls(getPolygonOffet(this.route, 200, 1)));
-    this.walls.push(...this.drawWalls(getPolygonOffet(this.route, 40, -1)));
+    this.walls.push(...this.createWalls(getPolygonOffet(this.route, 200, 1)));
+    this.walls.push(...this.createWalls(getPolygonOffet(this.route, 40, -1)));
+    this.checkpoints = this.createCheckPoints();
   }
 
-  private drawWalls(points: Phaser.Math.Vector2[]) {
+  private createWalls(points: Phaser.Math.Vector2[]) {
     return points.map((point, index) => {
       const nextPoint = points[(index + 1) % points.length];
       const vec = new Phaser.Math.Vector2(
@@ -38,6 +40,34 @@ class Road extends Phaser.Physics.Matter.Factory {
         label: "wall",
       }) as Phaser.Physics.Matter.Sprite;
       return wall;
+    });
+  }
+
+  private createCheckPoints() {
+    return this.walls.slice(0, this.walls.length / 2).map((point, index) => {
+      const otherPoint = this.walls[index + this.walls.length / 2];
+      const midPoint = new Phaser.Math.Vector2(point.x, point.y).lerp(
+        otherPoint,
+        0.5
+      );
+
+      const vec = new Phaser.Math.Vector2(
+        point.x - otherPoint.x,
+        point.y - otherPoint.y
+      );
+
+      return this.scene.matter.add.rectangle(
+        midPoint.x,
+        midPoint.y,
+        vec.length(),
+        10,
+        {
+          label: "checkpoint",
+          isStatic: true,
+          isSensor: true,
+          angle: vec.angle(),
+        }
+      );
     });
   }
 }

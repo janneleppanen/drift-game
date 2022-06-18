@@ -1,5 +1,7 @@
 class Car extends Phaser.Physics.Matter.Image {
   public odometer = 0;
+  public lastCheckpoint!: string;
+  public checkpointCount = 0;
 
   private steering = 0.04;
   private acceleration = 0.002;

@@ -32,6 +32,8 @@ class Race extends Phaser.Scene {
     this.cursors = this.input.keyboard.createCursorKeys();
     this.gui = new Gui(this);
     this.gui.create();
+
+    this.setupCheckpointCollision();
   }
 
   update() {
@@ -39,6 +41,23 @@ class Race extends Phaser.Scene {
     this.cameras.main.pan(this.cars[0].x, this.cars[0].y, 10);
 
     this.gui.setTravelled(this.cars[0].odometer);
+    this.gui.setCheckpointCount(this.cars[0].checkpointCount);
+  }
+
+  setupCheckpointCollision() {
+    this.road.checkpoints.forEach((checkpoint) => {
+      const car = this.cars[0];
+      const carBody = this.cars[0].body as MatterJS.BodyType;
+      checkpoint.setOnCollideWith(
+        carBody,
+        (_: MatterJS.BodyType, collisionData: { id: string }) => {
+          if (car.lastCheckpoint !== collisionData.id) {
+            car.lastCheckpoint = collisionData.id;
+            car.checkpointCount++;
+          }
+        }
+      );
+    });
   }
 }
 
