@@ -36,6 +36,7 @@ class Race extends Phaser.Scene {
         -75,
         600,
         {},
+        "user",
         new Sensor(this.matter.world, this.road.lines)
       )
     );
