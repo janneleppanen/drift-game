@@ -11,10 +11,10 @@ class Car extends Phaser.Physics.Matter.Image {
   public lastCheckpoint!: string;
   public checkpointCount = 0;
   public brain!: NeuralNetwork;
+  public sensor?: Sensor;
 
   private steering = 0.04;
   private acceleration = 0.002;
-  private sensor?: Sensor;
   private controls: Controls = {
     keysDown: [],
   };

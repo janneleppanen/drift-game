@@ -23,7 +23,7 @@ class Race extends Phaser.Scene {
   private gui!: Gui;
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
   private bestCar!: Car;
-  private carCount = 2;
+  private carCount = 10;
   private bestScore = 0;
 
   constructor() {
@@ -108,6 +108,12 @@ class Race extends Phaser.Scene {
       if (points > this.bestScore) {
         this.bestScore = points;
         this.bestCar = car;
+        this.cars.forEach((car) => {
+          car.setAlpha(0.1);
+          car.sensor?.setSensorVisibility(false);
+        });
+        this.bestCar.setAlpha(1);
+        this.bestCar.sensor?.setSensorVisibility(true);
       }
     });
   }

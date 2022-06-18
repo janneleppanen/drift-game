@@ -98,6 +98,11 @@ class Sensor {
       }
     });
   }
+
+  setSensorVisibility(visible: boolean) {
+    this.rays.forEach((ray) => ray.setVisible(visible));
+    this.hitIndicators.forEach((indicator) => indicator.setVisible(visible));
+  }
 }
 
 export default Sensor;
