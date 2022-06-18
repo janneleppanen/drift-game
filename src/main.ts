@@ -1,5 +1,6 @@
 import "./style.css";
 import Phaser from "phaser";
+import Preloader from "./scenes/Preloader";
 import Race from "./scenes/Race";
 
 const config: Phaser.Types.Core.GameConfig = {
@@ -16,7 +17,7 @@ const config: Phaser.Types.Core.GameConfig = {
     },
   },
   backgroundColor: "#444",
-  scene: [Race],
+  scene: [Preloader, Race],
 };
 
 new Phaser.Game(config);
