@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 import Car from "../objects/car";
 import Road from "../objects/road";
+import Sensor from "../objects/sensor";
 
 class Race extends Phaser.Scene {
   private car!: Phaser.Physics.Matter.Image;
@@ -21,9 +22,15 @@ class Race extends Phaser.Scene {
 
   create() {
     const { width, height } = this.scale;
-    this.car = new Car(this.matter.world, 0, 400, {});
     this.road = new Road(this.matter.world);
     this.road.create();
+    this.car = new Car(
+      this.matter.world,
+      -50,
+      400,
+      {},
+      new Sensor(this, this.road)
+    );
   }
 
   update() {

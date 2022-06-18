@@ -10,18 +10,21 @@ class Road extends Phaser.Physics.Matter.Factory {
     new Phaser.Math.Vector2(100, 1000),
     new Phaser.Math.Vector2(0, 900),
   ];
+  public walls: MatterJS.BodyType[] = [];
+  public lines: Phaser.Math.Vector2[][] = [];
 
   constructor(world: Phaser.Physics.Matter.World) {
     super(world);
   }
 
   create() {
-    this.drawWalls(getPolygonOffet(this.route, 200, 1));
-    this.drawWalls(getPolygonOffet(this.route, 40, -1));
+    this.walls.push(...this.drawWalls(getPolygonOffet(this.route, 200, 1)));
+    this.walls.push(...this.drawWalls(getPolygonOffet(this.route, 40, -1)));
+    console.log(this.lines);
   }
 
   drawWalls(points: Phaser.Math.Vector2[]) {
-    points.forEach((point, index) => {
+    return points.map((point, index) => {
       const nextPoint = points[(index + 1) % points.length];
       const vec = new Phaser.Math.Vector2(
         point.x - nextPoint.x,
@@ -31,9 +34,11 @@ class Road extends Phaser.Physics.Matter.Factory {
       const angle = vec.angle();
       const mid = point.clone().lerp(nextPoint, 0.5);
 
-      this.rectangle(mid.x, mid.y, width, 10, {
+      this.lines.push([point, nextPoint]);
+      return this.rectangle(mid.x, mid.y, width, 10, {
         isStatic: true,
         angle,
+        label: "wall",
       });
     });
   }

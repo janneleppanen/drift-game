@@ -4,14 +4,16 @@ import RaceScene from "./scenes/race";
 
 const DEBUG = true;
 
-const config = {
+const config: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO,
   width: window.innerWidth,
   height: window.innerHeight,
   physics: {
     default: "matter",
     matter: {
-      debug: DEBUG,
+      debug: {
+        showCollisions: true,
+      },
       gravity: { y: 0 },
     },
   },

@@ -1,6 +1,5 @@
 import Phaser from "phaser";
-import Sensor from "../sensor";
-// import Sensor from "./sensor";
+import Sensor from "./sensor";
 
 class Car extends Phaser.Physics.Matter.Image {
   // private steering: number = 3.0;
@@ -13,28 +12,34 @@ class Car extends Phaser.Physics.Matter.Image {
     world: Phaser.Physics.Matter.World,
     x: number,
     y: number,
-    options: Phaser.Types.Physics.Matter.MatterBodyConfig
+    options: Phaser.Types.Physics.Matter.MatterBodyConfig,
+    sensor: Sensor
   ) {
     super(world, x, y, "car", undefined, {
       chamfer: {
         radius: 6,
       },
       mass: 1,
+      label: "car",
       ...options,
     });
     world.scene.add.existing(this);
     this.setFriction(this.friction, this.friction);
-    this.sensor = new Sensor(world.scene);
-    this.sensor.create();
 
-    // this.s = new Sensor(world);
-    // this.s.create();
-    // this.s.attach(this);
+    // this.sensor = new Sensor(world.scene);
+    // this.sensor.create();
+
+    if (sensor) {
+      this.sensor = sensor;
+      this.sensor.create();
+      this.sensor.attach(this.body);
+    }
   }
 
   update(cursors: Phaser.Types.Input.Keyboard.CursorKeys) {
     const maxSteering = Math.min(this.steering, this.body.speed * 0.2);
-    this.sensor.moveTo(this.body.position.x, this.body.position.y, this.angle);
+
+    // this.sensor.moveTo(this.body.position.x, this.body.position.y, this.angle);
 
     if (cursors.up?.isDown) {
       this.applyForce(
@@ -62,6 +67,10 @@ class Car extends Phaser.Physics.Matter.Image {
     if (cursors.right?.isDown) {
       this.setAngularVelocity(maxSteering);
       // this.setAngle((this.angle += maxSteering));
+    }
+
+    if (this.sensor) {
+      this.sensor.update();
     }
   }
 }
