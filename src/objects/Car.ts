@@ -1,3 +1,5 @@
+import Sensor from "./Sensor";
+
 class Car extends Phaser.Physics.Matter.Image {
   public odometer = 0;
   public lastCheckpoint!: string;
@@ -5,12 +7,14 @@ class Car extends Phaser.Physics.Matter.Image {
 
   private steering = 0.04;
   private acceleration = 0.002;
+  private sensor?: Sensor;
 
   constructor(
     world: Phaser.Physics.Matter.World,
     x: number = 0,
     y: number = 0,
-    options: Phaser.Types.Physics.Matter.MatterBodyConfig = {}
+    options: Phaser.Types.Physics.Matter.MatterBodyConfig = {},
+    sensor?: Sensor
   ) {
     super(world, x, y, "car", undefined, {
       chamfer: {
@@ -23,6 +27,13 @@ class Car extends Phaser.Physics.Matter.Image {
       ...options,
     });
     world.scene.add.existing(this);
+    this.sensor = sensor;
+
+    if (this.sensor) {
+      const body = this.body as MatterJS.BodyType;
+      this.sensor.create();
+      this.sensor.attach(body);
+    }
   }
 
   public update(cursors: Phaser.Types.Input.Keyboard.CursorKeys) {
@@ -32,6 +43,10 @@ class Car extends Phaser.Physics.Matter.Image {
 
     const body = this.body as MatterJS.BodyType;
     this.odometer += body.speed / 10;
+
+    if (this.sensor) {
+      this.sensor.update();
+    }
   }
 
   private move(cursors: Phaser.Types.Input.Keyboard.CursorKeys) {

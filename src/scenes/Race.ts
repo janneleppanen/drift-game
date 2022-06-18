@@ -1,6 +1,7 @@
 import Car from "../objects/Car";
 import Gui from "../objects/Gui";
 import Road from "../objects/Road";
+import Sensor from "../objects/Sensor";
 
 const route = [
   new Phaser.Math.Vector2(0, 100),
@@ -27,8 +28,17 @@ class Race extends Phaser.Scene {
 
   init() {
     this.road = new Road(this.matter.world, route);
-    this.cars.push(new Car(this.matter.world, 0, 600, {}));
     this.road.create();
+
+    this.cars.push(
+      new Car(
+        this.matter.world,
+        -75,
+        600,
+        {},
+        new Sensor(this.matter.world, this.road.lines)
+      )
+    );
     this.cursors = this.input.keyboard.createCursorKeys();
     this.gui = new Gui(this);
     this.gui.create();
