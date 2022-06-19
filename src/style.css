@@ -5,16 +5,14 @@ body {
   overflow: hidden;
 }
 
-.gui-container {
-  background: white;
-  border: 1px solid #ddd;
-  position: absolute;
-  top: 1em;
-  left: 1em;
-  padding: 0.5em;
-  min-width: 120px;
+.rerun {
+  position: fixed;
+  top: 40px;
+  left: 10px;
 }
 
-.score {
-  font-weight: bold;
+.reset-ai {
+  position: fixed;
+  top: 80px;
+  left: 10px;
 }
