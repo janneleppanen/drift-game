@@ -15,7 +15,7 @@ class Car extends Phaser.Physics.Matter.Image {
   public damaged = false;
 
   private steering = 0.04;
-  private acceleration = 0.001;
+  private acceleration = 0.002;
   private controls: Controls = {
     keysDown: [],
   };
@@ -48,7 +48,7 @@ class Car extends Phaser.Physics.Matter.Image {
       this.sensor.create();
       this.sensor.attach(body);
       this.sensor.setSensorVisibility(false);
-      this.brain = new NeuralNetwork([this.sensor.rayCount + 1, 6, 4]);
+      this.brain = new NeuralNetwork([this.sensor.rayCount + 2, 6, 4]);
     }
   }
 
@@ -117,10 +117,11 @@ class Car extends Phaser.Physics.Matter.Image {
         s === null ? 0 : 1 - s.offset
       );
       const body = this.body as MatterJS.BodyType;
-      const speed = body.speed / 100;
+      const speed = body.speed / 20;
+      const angularVelocity = body.angularVelocity * 10 + 0.5;
 
       const outputs = NeuralNetwork.feedForward(
-        [...offsets, speed],
+        [...offsets, speed, angularVelocity],
         this.brain
       );
 

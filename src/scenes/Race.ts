@@ -6,6 +6,7 @@ import Sensor from "../objects/Sensor";
 
 const AI_MUTATION_VARIATION = 0.1;
 const CAR_COUNT = 30;
+const CAR_TYPE = "ai";
 
 const route = [
   new Phaser.Math.Vector2(0, 100),
@@ -47,7 +48,7 @@ class Race extends Phaser.Scene {
             mask: this.road.collisionGroup,
           },
         },
-        "ai",
+        CAR_TYPE,
         new Sensor(this.matter.world, this.road.lines)
       );
       car.setOnCollide(
