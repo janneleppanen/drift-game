@@ -4,17 +4,20 @@ import Gui from "../objects/Gui";
 import Road from "../objects/Road";
 import Sensor from "../objects/Sensor";
 
-const AI_MUTATION_VARIATION = 0.1;
+const AI_MUTATION_VARIATION = 0.25;
 const CAR_COUNT = 30;
 const CAR_TYPE = "ai";
 
 const route = [
+  new Phaser.Math.Vector2(0, 700),
   new Phaser.Math.Vector2(0, 100),
   new Phaser.Math.Vector2(100, 0),
-  new Phaser.Math.Vector2(400, 200),
-  new Phaser.Math.Vector2(800, 0),
-  new Phaser.Math.Vector2(900, 100),
-  new Phaser.Math.Vector2(700, 500),
+  new Phaser.Math.Vector2(300, 0),
+  new Phaser.Math.Vector2(400, -100),
+  new Phaser.Math.Vector2(400, -400),
+  new Phaser.Math.Vector2(500, -500),
+  new Phaser.Math.Vector2(900, -500),
+  new Phaser.Math.Vector2(1000, -400),
   new Phaser.Math.Vector2(900, 900),
   new Phaser.Math.Vector2(800, 1000),
   new Phaser.Math.Vector2(100, 1000),
@@ -40,7 +43,7 @@ class Race extends Phaser.Scene {
     for (let i = 0; i < CAR_COUNT; i++) {
       const car = new Car(
         this.matter.world,
-        -75,
+        -25,
         600,
         {
           collisionFilter: {
@@ -113,9 +116,15 @@ class Race extends Phaser.Scene {
         if (carBody) {
           checkpoint.setOnCollideWith(
             carBody,
-            (_: MatterJS.BodyType, collisionData: { id: string }) => {
-              if (car.lastCheckpoint !== collisionData.id) {
-                car.lastCheckpoint = collisionData.id;
+            (
+              _: MatterJS.BodyType,
+              collisionData: Phaser.Types.Physics.Matter.MatterCollisionData
+            ) => {
+              if (
+                !car.lastCheckpoint ||
+                car.lastCheckpoint < collisionData.bodyA.id
+              ) {
+                car.lastCheckpoint = collisionData.bodyA.id;
                 car.checkpointCount++;
               }
             }
@@ -146,7 +155,7 @@ class Race extends Phaser.Scene {
 
   respawnCar(car: Car) {
     car.reset();
-    car.setPosition(-75, 600);
+    car.setPosition(-25, 600);
 
     if (car !== this.bestCar) {
       car.brain = JSON.parse(JSON.stringify(this.bestCar.brain));

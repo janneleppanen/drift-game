@@ -8,14 +8,14 @@ type ControlType = "user" | "ai";
 
 class Car extends Phaser.Physics.Matter.Image {
   public odometer = 0;
-  public lastCheckpoint!: string;
+  public lastCheckpoint = 0;
   public checkpointCount = 0;
   public brain!: NeuralNetwork;
   public sensor?: Sensor;
   public damaged = false;
 
   private steering = 0.04;
-  private acceleration = 0.002;
+  private acceleration = 0.0015;
   private controls: Controls = {
     keysDown: [],
   };
@@ -48,16 +48,17 @@ class Car extends Phaser.Physics.Matter.Image {
       this.sensor.create();
       this.sensor.attach(body);
       this.sensor.setSensorVisibility(false);
-      this.brain = new NeuralNetwork([this.sensor.rayCount + 2, 6, 4]);
+      this.brain = new NeuralNetwork([this.sensor.rayCount + 2, 10, 4]);
     }
   }
 
   public reset() {
     this.odometer = 0;
-    this.lastCheckpoint = "";
+    this.lastCheckpoint = 0;
     this.checkpointCount = 0;
     this.damaged = false;
     this.angle = 0;
+    this.controls.keysDown = [];
   }
 
   public update(cursors: Phaser.Types.Input.Keyboard.CursorKeys) {

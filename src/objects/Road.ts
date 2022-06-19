@@ -17,8 +17,8 @@ class Road extends Phaser.Physics.Matter.Factory {
   }
 
   create() {
-    this.walls.push(...this.createWalls(getPolygonOffet(this.route, 200, 1)));
-    this.walls.push(...this.createWalls(getPolygonOffet(this.route, 40, -1)));
+    this.walls.push(...this.createWalls(getPolygonOffet(this.route, 150, 1)));
+    this.walls.push(...this.createWalls(getPolygonOffet(this.route, 150, -1)));
     this.checkpoints = this.createCheckPoints();
   }
 

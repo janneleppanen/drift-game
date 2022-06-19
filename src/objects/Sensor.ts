@@ -1,8 +1,8 @@
 import { Intersection, getIntersection, lerp } from "../utils";
 
 class Sensor {
-  public length = 200;
-  public rayCount = 5;
+  public length = 300;
+  public rayCount = 7;
   public readings: Intersection[] = [];
   public rays: Phaser.GameObjects.Graphics[] = [];
   public spread = Math.PI / 2;
