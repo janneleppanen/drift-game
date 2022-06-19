@@ -35,15 +35,21 @@ class Race extends Phaser.Scene {
     this.road.create();
 
     for (let i = 0; i < this.carCount; i++) {
-      const car = new Car(
-        this.matter.world,
-        -75,
-        600,
-        {},
-        "ai",
-        new Sensor(this.matter.world, this.road.lines)
+      this.cars.push(
+        new Car(
+          this.matter.world,
+          -75,
+          600,
+          {
+            collisionFilter: {
+              category: this.matter.world.nextCategory(),
+              mask: this.road.collisionGroup,
+            },
+          },
+          "ai",
+          new Sensor(this.matter.world, this.road.lines)
+        )
       );
-      this.cars.push(car);
     }
 
     if (localStorage.getItem("bestAI")) {

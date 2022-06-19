@@ -5,6 +5,7 @@ class Road extends Phaser.Physics.Matter.Factory {
   public walls: Phaser.Physics.Matter.Sprite[] = [];
   public lines: Phaser.Math.Vector2[][] = [];
   public checkpoints: MatterJS.BodyType[] = [];
+  public collisionGroup = 0;
 
   constructor(
     world: Phaser.Physics.Matter.World,
@@ -12,6 +13,7 @@ class Road extends Phaser.Physics.Matter.Factory {
   ) {
     super(world);
     this.route = route;
+    this.collisionGroup = world.nextCategory();
   }
 
   create() {
@@ -34,12 +36,15 @@ class Road extends Phaser.Physics.Matter.Factory {
       this.lines.push([point, nextPoint]);
 
       const sprite = this.scene.add.tileSprite(mid.x, mid.y, width, 20, "tyre");
-      const wall = this.scene.matter.add.gameObject(sprite, {
+
+      return this.scene.matter.add.gameObject(sprite, {
         isStatic: true,
         angle,
         label: "wall",
+        collisionFilter: {
+          category: this.collisionGroup,
+        },
       }) as Phaser.Physics.Matter.Sprite;
-      return wall;
     });
   }
 
@@ -66,6 +71,9 @@ class Road extends Phaser.Physics.Matter.Factory {
           isStatic: true,
           isSensor: true,
           angle: vec.angle(),
+          collisionFilter: {
+            category: this.collisionGroup,
+          },
         }
       );
     });
