@@ -49,34 +49,44 @@ class Road extends Phaser.Physics.Matter.Factory {
   }
 
   private createCheckPoints() {
-    return this.walls.slice(0, this.walls.length / 2).map((point, index) => {
-      const otherPoint = this.walls[index + this.walls.length / 2];
-      const midPoint = new Phaser.Math.Vector2(point.x, point.y).lerp(
-        otherPoint,
-        0.5
-      );
+    const checkpoints: MatterJS.BodyType[] = [];
 
-      const vec = new Phaser.Math.Vector2(
-        point.x - otherPoint.x,
-        point.y - otherPoint.y
-      );
+    this.lines.slice(0, this.walls.length / 2).map((point, index) => {
+      const otherPoint = this.lines[index + this.walls.length / 2];
 
-      return this.scene.matter.add.rectangle(
-        midPoint.x,
-        midPoint.y,
-        vec.length(),
-        10,
-        {
-          label: "checkpoint",
-          isStatic: true,
-          isSensor: true,
-          angle: vec.angle(),
-          collisionFilter: {
-            category: this.collisionGroup,
-          },
-        }
-      );
+      const checkpointsPerSection = 4;
+      for (let i = 0; i < checkpointsPerSection; i++) {
+        const t = (1 / checkpointsPerSection) * i;
+        const outerPoint = point[0].clone().lerp(point[1], t);
+        const innerPoint = otherPoint[0].clone().lerp(otherPoint[1], t);
+        const midPoint = outerPoint.clone().lerp(innerPoint, 0.5);
+
+        const vec = new Phaser.Math.Vector2(
+          outerPoint.x - innerPoint.x,
+          outerPoint.y - innerPoint.y
+        );
+
+        const checkpoint = this.scene.matter.add.rectangle(
+          midPoint.x,
+          midPoint.y,
+          vec.length(),
+          10,
+          {
+            label: "checkpoint",
+            isStatic: true,
+            isSensor: true,
+            angle: vec.angle(),
+            collisionFilter: {
+              category: this.collisionGroup,
+            },
+          }
+        );
+
+        checkpoints.push(checkpoint);
+      }
     });
+
+    return checkpoints;
   }
 }
 

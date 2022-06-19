@@ -126,7 +126,7 @@ class Race extends Phaser.Scene {
 
   getBestBrain() {
     this.cars.forEach((car) => {
-      const points = car.checkpointCount * 1000 + car.odometer;
+      const points = car.checkpointCount;
       if (points > this.bestScore) {
         this.bestScore = points;
         this.bestCar = car;

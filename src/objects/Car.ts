@@ -47,6 +47,7 @@ class Car extends Phaser.Physics.Matter.Image {
       const body = this.body as MatterJS.BodyType;
       this.sensor.create();
       this.sensor.attach(body);
+      this.sensor.setSensorVisibility(false);
       this.brain = new NeuralNetwork([this.sensor.rayCount + 1, 6, 4]);
     }
   }

@@ -1,7 +1,7 @@
 import "./style.css";
 import Phaser from "phaser";
 import Preloader from "./scenes/Preloader";
-import Race from "./scenes/Race";
+import Race from "./scenes/race";
 
 const config: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO,
