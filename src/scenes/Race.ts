@@ -4,6 +4,9 @@ import Gui from "../objects/Gui";
 import Road from "../objects/Road";
 import Sensor from "../objects/Sensor";
 
+const AI_MUTATION_VARIATION = 0.1;
+const CAR_COUNT = 30;
+
 const route = [
   new Phaser.Math.Vector2(0, 100),
   new Phaser.Math.Vector2(100, 0),
@@ -23,7 +26,6 @@ class Race extends Phaser.Scene {
   private gui!: Gui;
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
   private bestCar!: Car;
-  private carCount = 30;
   private bestScore = 0;
 
   constructor() {
@@ -34,22 +36,29 @@ class Race extends Phaser.Scene {
     this.road = new Road(this.matter.world, route);
     this.road.create();
 
-    for (let i = 0; i < this.carCount; i++) {
-      this.cars.push(
-        new Car(
-          this.matter.world,
-          -75,
-          600,
-          {
-            collisionFilter: {
-              category: this.matter.world.nextCategory(),
-              mask: this.road.collisionGroup,
-            },
+    for (let i = 0; i < CAR_COUNT; i++) {
+      const car = new Car(
+        this.matter.world,
+        -75,
+        600,
+        {
+          collisionFilter: {
+            category: this.matter.world.nextCategory(),
+            mask: this.road.collisionGroup,
           },
-          "ai",
-          new Sensor(this.matter.world, this.road.lines)
-        )
+        },
+        "ai",
+        new Sensor(this.matter.world, this.road.lines)
       );
+      car.setOnCollide(
+        ({ bodyA, bodyB }: Phaser.Types.Physics.Matter.MatterCollisionData) => {
+          if ([bodyA.label, bodyB.label].includes("wall")) {
+            car.damaged = true;
+            setTimeout(() => this.respawnCar(car), 1000);
+          }
+        }
+      );
+      this.cars.push(car);
     }
 
     if (localStorage.getItem("bestAI")) {
@@ -57,10 +66,14 @@ class Race extends Phaser.Scene {
         const bestAI = JSON.parse(
           localStorage.getItem("bestAI") || ""
         ) as NeuralNetwork;
+
         this.cars[i].brain = bestAI;
 
-        if (i != 0 && this.cars[i].brain) {
-          NeuralNetwork.mutate(this.cars[i].brain as NeuralNetwork, 0.2);
+        if (i !== 0 && this.cars[i].brain) {
+          NeuralNetwork.mutate(
+            this.cars[i].brain as NeuralNetwork,
+            AI_MUTATION_VARIATION
+          );
         }
       }
     }
@@ -74,12 +87,12 @@ class Race extends Phaser.Scene {
 
     document.querySelector(".rerun")?.addEventListener("click", () => {
       localStorage.setItem("bestAI", JSON.stringify(this.bestCar?.brain));
-      window.location.reload();
+      // setTimeout(() => window.location.reload(), 100);
     });
 
     document.querySelector(".reset-ai")?.addEventListener("click", () => {
       localStorage.removeItem("bestAI");
-      window.location.reload();
+      // setTimeout(() => window.location.reload(), 100);
     });
   }
 
@@ -113,18 +126,31 @@ class Race extends Phaser.Scene {
 
   getBestBrain() {
     this.cars.forEach((car) => {
-      const points = car.checkpointCount * 100 + car.odometer;
+      const points = car.checkpointCount * 1000 + car.odometer;
       if (points > this.bestScore) {
         this.bestScore = points;
         this.bestCar = car;
         this.cars.forEach((car) => {
           car.setAlpha(0.1);
           car.sensor?.setSensorVisibility(false);
+          car.setTint(0xffffff);
         });
+
+        this.bestCar.setTint(0x0099ff);
         this.bestCar.setAlpha(1);
         this.bestCar.sensor?.setSensorVisibility(true);
       }
     });
+  }
+
+  respawnCar(car: Car) {
+    car.reset();
+    car.setPosition(-75, 600);
+
+    if (car !== this.bestCar) {
+      car.brain = JSON.parse(JSON.stringify(this.bestCar.brain));
+      NeuralNetwork.mutate(car.brain as NeuralNetwork, AI_MUTATION_VARIATION);
+    }
   }
 }
 

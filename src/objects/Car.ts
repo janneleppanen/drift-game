@@ -12,9 +12,10 @@ class Car extends Phaser.Physics.Matter.Image {
   public checkpointCount = 0;
   public brain!: NeuralNetwork;
   public sensor?: Sensor;
+  public damaged = false;
 
   private steering = 0.04;
-  private acceleration = 0.002;
+  private acceleration = 0.001;
   private controls: Controls = {
     keysDown: [],
   };
@@ -50,6 +51,14 @@ class Car extends Phaser.Physics.Matter.Image {
     }
   }
 
+  public reset() {
+    this.odometer = 0;
+    this.lastCheckpoint = "";
+    this.checkpointCount = 0;
+    this.damaged = false;
+    this.angle = 0;
+  }
+
   public update(cursors: Phaser.Types.Input.Keyboard.CursorKeys) {
     this.controls.keysDown = [];
     if (this.controlType === "ai") {
@@ -58,7 +67,7 @@ class Car extends Phaser.Physics.Matter.Image {
       this.useKeyboard(cursors);
     }
 
-    if (cursors) {
+    if (!this.damaged) {
       this.move();
     }
 
@@ -107,7 +116,7 @@ class Car extends Phaser.Physics.Matter.Image {
         s === null ? 0 : 1 - s.offset
       );
       const body = this.body as MatterJS.BodyType;
-      const speed = body.speed;
+      const speed = body.speed / 100;
 
       const outputs = NeuralNetwork.feedForward(
         [...offsets, speed],

@@ -1,7 +1,7 @@
 import { Intersection, getIntersection, lerp } from "../utils";
 
 class Sensor {
-  public length = 400;
+  public length = 200;
   public rayCount = 5;
   public readings: Intersection[] = [];
   public rays: Phaser.GameObjects.Graphics[] = [];
@@ -83,6 +83,12 @@ class Sensor {
         );
 
         if (intersection && !this.readings[i]) {
+          this.readings[i] = intersection;
+        } else if (
+          intersection &&
+          this.readings[i] &&
+          this.readings[i].offset < intersection.offset
+        ) {
           this.readings[i] = intersection;
         }
       });
