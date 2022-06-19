@@ -23,7 +23,7 @@ class Race extends Phaser.Scene {
   private gui!: Gui;
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
   private bestCar!: Car;
-  private carCount = 10;
+  private carCount = 30;
   private bestScore = 0;
 
   constructor() {
