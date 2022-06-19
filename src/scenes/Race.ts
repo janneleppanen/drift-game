@@ -72,10 +72,13 @@ class Race extends Phaser.Scene {
 
     this.setupCheckpointCollision();
 
-    const button = document.querySelector(".rerun");
-
-    button?.addEventListener("click", () => {
+    document.querySelector(".rerun")?.addEventListener("click", () => {
       localStorage.setItem("bestAI", JSON.stringify(this.bestCar?.brain));
+      window.location.reload();
+    });
+
+    document.querySelector(".reset-ai")?.addEventListener("click", () => {
+      localStorage.removeItem("bestAI");
       window.location.reload();
     });
   }
