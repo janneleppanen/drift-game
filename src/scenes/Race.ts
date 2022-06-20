@@ -91,12 +91,10 @@ class Race extends Phaser.Scene {
 
     document.querySelector(".rerun")?.addEventListener("click", () => {
       localStorage.setItem("bestAI", JSON.stringify(this.bestCar?.brain));
-      // setTimeout(() => window.location.reload(), 100);
     });
 
     document.querySelector(".reset-ai")?.addEventListener("click", () => {
       localStorage.removeItem("bestAI");
-      // setTimeout(() => window.location.reload(), 100);
     });
   }
 
