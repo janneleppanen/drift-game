@@ -5,7 +5,7 @@ import Road from "../objects/Road";
 import Sensor from "../objects/Sensor";
 
 const AI_MUTATION_VARIATION = 0.25;
-const CAR_COUNT = 30;
+const CAR_COUNT = 20;
 const CAR_TYPE = "ai";
 
 const route = [
@@ -142,11 +142,13 @@ class Race extends Phaser.Scene {
           car.setAlpha(0.1);
           car.sensor?.setSensorVisibility(false);
           car.setTint(0xffffff);
+          car.exhaust.setVisible(false);
         });
 
         this.bestCar.setTint(0x0099ff);
         this.bestCar.setAlpha(1);
         this.bestCar.sensor?.setSensorVisibility(true);
+        this.bestCar.exhaust.setVisible(true);
       }
     });
   }

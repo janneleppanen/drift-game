@@ -13,6 +13,7 @@ class Car extends Phaser.Physics.Matter.Image {
   public brain!: NeuralNetwork;
   public sensor?: Sensor;
   public damaged = false;
+  public exhaust!: Phaser.GameObjects.Particles.ParticleEmitter;
 
   private steering = 0.04;
   private acceleration = 0.0015;
@@ -50,6 +51,17 @@ class Car extends Phaser.Physics.Matter.Image {
       this.sensor.setSensorVisibility(false);
       this.brain = new NeuralNetwork([this.sensor.rayCount + 2, 12, 4]);
     }
+
+    const particles = this.scene.add.particles("dust");
+    this.exhaust = particles.createEmitter({
+      lifespan: { min: 200, max: 400 },
+      speed: { min: 20, max: 40 },
+      scale: { start: 0.7, end: 3 },
+      rotate: { min: 0, max: 360 },
+      alpha: { start: 0.4, end: 0 },
+      angle: 100,
+      follow: this,
+    });
   }
 
   public reset() {
@@ -79,6 +91,8 @@ class Car extends Phaser.Physics.Matter.Image {
     if (this.sensor) {
       this.sensor.update();
     }
+
+    this.updateExhaust();
   }
 
   private move() {
@@ -153,6 +167,19 @@ class Car extends Phaser.Physics.Matter.Image {
     }
     if (cursors.space?.isDown) {
       this.controls.keysDown.push("ArrowDown");
+    }
+  }
+
+  updateExhaust() {
+    this.exhaust.followOffset.set(
+      Math.sin(-this.rotation) * 22,
+      Math.cos(-this.rotation) * 22
+    );
+
+    if (this.controls.keysDown.includes("ArrowUp")) {
+      this.exhaust.setQuantity(1);
+    } else {
+      this.exhaust.setQuantity(0);
     }
   }
 }

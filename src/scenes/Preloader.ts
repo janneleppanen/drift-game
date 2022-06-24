@@ -6,6 +6,7 @@ class Preloader extends Phaser.Scene {
   preload() {
     this.load.image("car", "src/assets/car.png");
     this.load.image("tyre", "src/assets/tyre.png");
+    this.load.image("dust", "src/assets/dust.png");
   }
 
   create() {
