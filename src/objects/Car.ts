@@ -50,7 +50,7 @@ class Car extends Phaser.Physics.Matter.Image {
       this.sensor.create();
       this.sensor.attach(body);
       this.sensor.setSensorVisibility(false);
-      this.brain = new NeuralNetwork([this.sensor.rayCount + 2, 12, 4]);
+      this.brain = new NeuralNetwork([this.sensor.rayCount + 2, 40, 4]);
     }
 
     this.exhaust = new Exhaust(this.scene, this);
